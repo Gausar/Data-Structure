@@ -1,0 +1,170 @@
+#include "DS.h"
+
+/* p-ийн зааж буй List-д x утгыг төгсгөлд хийнэ */
+void l_push_back(List *p, Student x)
+{
+	/* Энд оруулах үйлдлийг хийнэ үү */
+    Elm *new = (Elm *)malloc(sizeof(Elm));
+    if (new == NULL) {
+        return;
+    }
+
+    new->x = x;
+    new->next = NULL;
+
+    if (p->len == 0) {
+        p->head = new;
+        p->tail = new;
+    } else {
+        p->tail->next = new;
+        p->tail = new;
+    }
+
+    p->len++;
+}
+
+
+/* p-ийн зааж буй List-д x утгыг эхэнд хийнэ
+   Бүх элементүүд нэг нэг байрлал хойшилно.
+ */
+void l_push_front(List *p, Student x)
+{
+	/* Энд оруулах үйлдлийг хийнэ үү */
+    Elm *t = (Elm *)malloc(sizeof(Elm));
+    if (t == NULL) {
+        return;
+    }
+
+    t->x = x;
+    t->next = p->head;
+    if(p->len == 0){
+      p->head = t;
+      p->tail = t;
+    }
+    else{
+        p->head = t;
+    }
+    p->len++;
+}
+
+/*
+  p-ийн зааж буй List-д x утгыг pos байрлалд хийнэ
+  pos болон түүнээс хойшхи элементүүд нэг байрлал ухарна.
+  Тухайн байрлал List-ийн сүүлийн индексээс их бол төгсгөлд орно.
+ */
+void l_insert(List *p, Student x, int pos)
+{
+	/* Энд оруулах үйлдлийг хийнэ үү */
+  Elm *new = (Elm *)malloc(sizeof(Elm));
+    if (new == NULL) {
+        return;
+    }
+    new->x = x;
+
+    if (pos >= p->len) {
+        new->next = NULL;
+        if (p->len == 0) {
+          p->head = new;
+          p->tail = new;
+        } else {
+          p->tail->next = new;
+          p->tail = new;
+        }
+    } else if (pos == 0) {
+        new->next = p->head;
+        p->head = new;
+    } else{
+        Elm *t = p->head;
+        for (int i = 0; i < pos - 1; i++) {
+          t = t->next;
+        }
+        new->next = t->next;
+        t->next = new;
+    }
+    p->len++;
+}
+
+
+/*
+  p-ийн зааж буй List-н эхлэлээс гаргана.
+  List-ийн бүх элементүүд нэг нэг байрлал урагшилна
+ */
+void l_pop_front(List *p)
+{
+	/* Энд гаргах үйлдлийг хийнэ үү */
+  int i;
+  Elm *temp = p->head;
+  p->head = p->head->next;
+  free(temp);
+  p->len--;
+}
+
+/* p-ийн зааж буй List-н төгсгөлөөс гаргана */
+void l_pop_back(List *p)
+{
+	/* Энд гаргах үйлдлийг хийнэ үү */
+  free(p->tail);
+  p->len--;
+}
+
+/* p-ийн зааж буй List-н pos байрлалаас гаргана.
+   pos болон түүнээс хойшхи элементүүд нэг байрлал урагшилна.
+   pos байрлалаас гарах боломжгүй бол юу ч хийхгүй.
+ */
+void l_erase(List *p, int pos)
+{
+	/* Энд гаргах үйлдлийг хийнэ үү */
+    if (pos < 0 || pos >= p->len) {
+        return;
+    }
+
+    if (pos == 0) {
+      Elm *temp = p->head;
+      p->head = p->head->next;
+      free(temp);
+    } 
+    else {
+        Elm *a = p->head;
+        int i;
+        for (i = 0; i < pos - 1; i++) {
+          a = a->next;
+        }
+
+        Elm *temp = a->next;
+        a->next = temp->next;
+        free(temp);
+    }
+    p->len--;
+}
+
+/*
+  p-ийн зааж буй List-н утгуудыг хэвлэнэ.
+  Хамгийн эхний элементээс эхлэн дарааллаар, нэг мөрөнд
+  нэг л элемент хэвлэнэ.
+ */
+void l_print(List *p)
+{
+        /* Энд хэвлэх үйлдлийг хийнэ үү */
+        Elm *t = p->head;
+        while(t != NULL){
+          printf("%d\n", t->x);
+          t = t->next;
+        }
+}
+
+/*
+  p-ийн зааж буй List-с id-тай оюутныг хайн олдсон хаягийг буцаана.
+  Олдохгүй бол NULL хаяг буцаана.
+ */
+Elm *l_search(List *p, const char id[])
+{
+        /*Энд хайх үйлдлийг хийнэ үү.*/
+        Elm *t = p->head;
+        while(t != NULL){
+          if(strcmp(t->x.id, id) == 0){
+            return t;
+          }
+          t = t->next;
+        }
+        return NULL;
+}
